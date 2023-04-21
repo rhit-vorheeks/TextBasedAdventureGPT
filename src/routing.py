@@ -51,7 +51,7 @@ class Routing:
                     "/prompts",
                     [
                         ft.ElevatedButton(
-                            "Go Home", on_click=lambda _: self.get_prompts("/")
+                            "Go Home", on_click=lambda _: self.get_prompts()
                         ),
                     ],
                     vertical_alignment = "CENTER",

@@ -1,5 +1,6 @@
 import flet as ft
 from Routing import Routing
+from GPTController import GPTController
 
 
 def main(page: ft.Page):
@@ -11,6 +12,8 @@ def main(page: ft.Page):
     page.window_height = 800
 
     route_handler = Routing(page)
+    controller = GPTController()
+    print(controller.get_response("among us"))
 
     def route_change(route):
         # future idea, pass in groups of containers so we have references to them here.
