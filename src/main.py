@@ -13,6 +13,7 @@ def main(page: ft.Page):
     route_handler = Routing(page)
 
     def route_change(route):
+        # future idea, pass in groups of containers so we have references to them here.
         route_handler.route_change(route)
 
     def view_pop(view):

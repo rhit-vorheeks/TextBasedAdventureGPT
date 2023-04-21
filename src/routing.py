@@ -2,9 +2,16 @@ import flet as ft
 
 
 class Routing:
-    page: ft.Page
+
     def __init__(self, page: ft.Page):
         self.page = page
+        self.game_theme = ""
+        self.game_location = ""
+        self.player_name = ""
+
+    def get_prompts(self):
+        # TODO: get prompts from the text boxes
+        return 0
 
     def route_change(self, route):
         self.page.views.clear()
@@ -44,7 +51,7 @@ class Routing:
                     "/prompts",
                     [
                         ft.ElevatedButton(
-                            "Go Home", on_click=lambda _: self.page.go("/")
+                            "Go Home", on_click=lambda _: self.get_prompts("/")
                         ),
                     ],
                     vertical_alignment = "CENTER",
