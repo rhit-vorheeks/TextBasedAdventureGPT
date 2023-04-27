@@ -20,3 +20,17 @@ class GPTController:
         )
 
         return completion.choices[0].message["content"]
+    
+    def get_description(self, prompt):
+        response = openai.Completion.create(engine="text-davinci-003",
+                                            prompt=prompt,
+                                            temperature=1,
+                                            max_tokens=250,
+                                            top_p=1,
+                                            n=1,
+                                            stream=False,
+                                            frequency_penalty=1,
+                                            presence_penalty=1,
+                                            stop="")
+
+        return response.choices[0].text

@@ -1,7 +1,7 @@
 import flet as ft
 
 
-class Routing:
+class PageController:
 
     def __init__(self, page: ft.Page):
         self.page = page
@@ -60,7 +60,7 @@ class Routing:
                             padding=5,
                         )
             tf1 = ft.TextField(
-                                hint_text="For example: Fantasy, Sci-Fi, etc.",
+                                hint_text="For example: A fantasy role-playing game, a sci-fi adventure, etc.",
                             )
             self.tf1 = tf1
             c2 = ft.Container(
@@ -94,7 +94,14 @@ class Routing:
                             margin = ft.margin.only(top=25)
                         )
             tf3 = ft.TextField(
-                                hint_text="For example: John, Jane, etc.",
+                                bgcolor=ft.colors.WHITE70,
+                                focused_bgcolor = ft.colors.WHITE,
+                                hint_style=ft.TextThemeStyle.TITLE_MEDIUM,
+                                color=ft.colors.BLACK,
+                                border_color = ft.colors.BLACK87,
+                                border_width = 0,
+                                cursor_color = ft.colors.BLACK,
+                                hint_text="For example: John Smith, Captain Kirk, etc.",
                             )
             self.tf3 = tf3
             c6 = ft.Container(

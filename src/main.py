@@ -1,5 +1,5 @@
 import flet as ft
-from Routing import Routing
+from PageController import PageController
 from GPTController import GPTController
 
 
@@ -11,16 +11,15 @@ def main(page: ft.Page):
     page.window_width = 600
     page.window_height = 800
 
-    route_handler = Routing(page)
+    page_controller = PageController(page)
     controller = GPTController()
-    # print(controller.get_dialogue("among us"))
+    # print(controller.get_description("among us"))
 
     def route_change(route):
-        # future idea, pass in groups of containers so we have references to them here.
-        route_handler.route_change(route)
+        page_controller.route_change(route)
 
     def view_pop(view):
-        route_handler.view_pop(view)
+        page_controller.view_pop(view)
 
     page.on_route_change = route_change
     page.on_view_pop = view_pop
