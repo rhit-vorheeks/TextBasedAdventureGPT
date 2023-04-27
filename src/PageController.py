@@ -94,20 +94,13 @@ class PageController:
                             margin = ft.margin.only(top=25)
                         )
             tf3 = ft.TextField(
-                                bgcolor=ft.colors.WHITE70,
-                                focused_bgcolor = ft.colors.WHITE,
-                                hint_style=ft.TextThemeStyle.TITLE_MEDIUM,
-                                color=ft.colors.BLACK,
-                                border_color = ft.colors.BLACK87,
-                                border_width = 0,
-                                cursor_color = ft.colors.BLACK,
                                 hint_text="For example: John Smith, Captain Kirk, etc.",
                             )
-            self.tf3 = tf3
             c6 = ft.Container(
                             content=tf3,
                             padding=5,
                         )
+            self.tf3 = tf3
             self.page.views.append(
                 ft.View(
                     "/prompts",
