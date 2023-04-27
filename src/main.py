@@ -10,7 +10,7 @@ def main(page: ft.Page):
     page.title = "A Text-Based Adventure"
     page.window_width = 600
     page.window_height = 800
-
+	
     page_controller = PageController(page)
     controller = GPTController()
     # print(controller.get_description("among us"))
