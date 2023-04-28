@@ -1,23 +1,20 @@
 import flet as ft
-
+from GameDataController import GameDataController
 
 class PageController:
 
     def __init__(self, page: ft.Page):
         self.page = page
-        self.game_theme = ""
-        self.game_location = ""
-        self.player_name = ""
-        
+        self.game_data_controller = GameDataController()
 
     def get_prompts(self):
-        print("made it here")
-        self.game_theme = self.tf1.value
-        self.game_location = self.tf2.value
-        self.player_name = self.tf3.value
-        print("Game Theme: " + self.game_theme)
-        print("Game Location: " + self.game_location)
-        print("Player Name: " + self.player_name)
+        self.game_data_controller.set_game_theme(self.tf1.value)
+        self.game_data_controller.set_game_location(self.tf2.value)
+        self.game_data_controller.set_player_name(self.tf3.value)
+        self.game_data_controller.generate_game_dataset()
+        # print("Game Theme: " + self.game_theme)
+        # print("Game Location: " + self.game_location)
+        # print("Player Name: " + self.player_name)
 
     def route_change(self, route):
         self.page.views.clear()
@@ -61,6 +58,7 @@ class PageController:
                         )
             tf1 = ft.TextField(
                                 hint_text="For example: A fantasy role-playing game, a sci-fi adventure, etc.",
+                                border_color = ft.colors.WHITE70
                             )
             self.tf1 = tf1
             c2 = ft.Container(
@@ -78,6 +76,7 @@ class PageController:
                         )
             tf2 = ft.TextField(
                                 hint_text="For example: A castle, a spaceship, etc.",
+                                border_color = ft.colors.WHITE70
                             )
             self.tf2 = tf2
             c4 = ft.Container(
@@ -95,6 +94,7 @@ class PageController:
                         )
             tf3 = ft.TextField(
                                 hint_text="For example: John Smith, Captain Kirk, etc.",
+                                border_color = ft.colors.WHITE70
                             )
             c6 = ft.Container(
                             content=tf3,

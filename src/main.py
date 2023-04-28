@@ -1,6 +1,5 @@
 import flet as ft
 from PageController import PageController
-from GPTController import GPTController
 
 
 def main(page: ft.Page):
@@ -12,7 +11,6 @@ def main(page: ft.Page):
     page.window_height = 800
 	
     page_controller = PageController(page)
-    controller = GPTController()
     # print(controller.get_description("among us"))
 
     def route_change(route):
