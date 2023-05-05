@@ -9,7 +9,7 @@ class GPTController:
         api_key = os.getenv('API_KEY')
         openai.api_key = api_key
         
-
+    
     def get_dialogue(self, prompt):
         openai.Model.retrieve("gpt-3.5-turbo")
         completion = openai.ChatCompletion.create(

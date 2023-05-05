@@ -11,7 +11,6 @@ def main(page: ft.Page):
     page.window_height = 800
 	
     page_controller = PageController(page)
-    # print(controller.get_description("among us"))
 
     def route_change(route):
         page_controller.route_change(route)

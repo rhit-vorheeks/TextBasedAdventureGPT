@@ -8,13 +8,13 @@ class GameDataController:
         self.GPTcontroller = GPTController()
 
     def set_game_theme(self, theme):
-        self.game_theme = theme
+        self.game_theme = theme.strip()
 
     def set_game_location(self, location):
-        self.game_location = location
+        self.game_location = location.strip()
 
     def set_player_name(self, name):
-        self.player_name = name
+        self.player_name = name.strip()
 
     def get_game_theme(self):
         return self.game_theme
