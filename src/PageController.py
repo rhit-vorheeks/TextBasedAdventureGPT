@@ -147,8 +147,8 @@ class PageController:
             message = self.gpt_controller.get_description(
                 "You are pretending to be a human, act helpful and be clever/funny. respond to the person '"
                 + self.game_data_controller.get_player_name()
-                + "' who said: "
-                + message
+                + "' who told you only '"
+                + message + "'"
             ).strip()
             progress_bar.visible = False
             container.visible = False
@@ -161,18 +161,15 @@ class PageController:
                     [
                         placeholder_text
                     ],
-                    spacing=0,
+                    spacing=100,
                 )
                 placeholder = ft.ResponsiveRow(
                     vertical_alignment="start",
                     controls=[placeholder_column],
                 )
-                chat.controls.append(placeholder_column)
+                chat.controls.append(placeholder)
                 self.page.update()
-                self.page.update()
-                self.page.update()
-                self.page.update()
-                sleep(0.01)
+                sleep(0.015)
                 chat.controls.pop()
 
         self.page.update()
