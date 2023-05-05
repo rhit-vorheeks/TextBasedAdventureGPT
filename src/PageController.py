@@ -105,33 +105,38 @@ class PageController:
 
     def add_message(self, message, chat, is_player, npc_name):
         text_message = ft.Text(value="", selectable=True)
-        progress_bar = ft.ProgressRing(width=16, height=16, stroke_width = 2, tooltip="Waiting for response...",)
+        progress_bar = ft.ProgressRing(
+            width=16,
+            height=16,
+            stroke_width=2,
+            tooltip="Waiting for response...",
+        )
         container = ft.Container(
             content=progress_bar,
-            padding=5,
+            padding=ft.padding.symmetric(horizontal=7),
+            margin=ft.margin.only(bottom=5)
         )
         column = ft.Column(
-                        [
-                            ft.Text(
-                                value=npc_name if not is_player else
-                                self.game_data_controller.get_player_name(),
-                                weight="bold",
-                            ),
-                            text_message,
-                            container,
-                        ],
-                        spacing=0,
-                    )
+            [
+                ft.Text(
+                    value=npc_name
+                    if not is_player
+                    else self.game_data_controller.get_player_name(),
+                    weight="bold",
+                ),
+                text_message,
+                container,
+            ],
+            spacing=0,
+        )
         m = ft.ResponsiveRow(
             vertical_alignment="start",
-            controls=[
-                    column
-                ],
-            )
-        
+            controls=[column],
+        )
+
         chat.controls.append(m)
         self.page.update()
-        
+
         if is_player:
             container.visible = False
             progress_bar.visible = False
@@ -139,23 +144,42 @@ class PageController:
             self.page.update()
             self.add_message(message, chat, False, "GPT")
         else:
-            message = self.gpt_controller.get_description("You are pretending to be a mean human, be as rude as possible and mean sprited. respond to the person '"+self.game_data_controller.get_player_name()+"' who said: "+message).strip()
+            message = self.gpt_controller.get_description(
+                "You are pretending to be a human, act helpful and be clever/funny. respond to the person '"
+                + self.game_data_controller.get_player_name()
+                + "' who said: "
+                + message
+            ).strip()
             progress_bar.visible = False
             container.visible = False
-            column.spacing = 3
             self.page.update()
             for character in message:
                 text_message.value += character
+
+                placeholder_text = ft.Text(value=" ")
+                placeholder_column = ft.Column(
+                    [
+                        placeholder_text
+                    ],
+                    spacing=0,
+                )
+                placeholder = ft.ResponsiveRow(
+                    vertical_alignment="start",
+                    controls=[placeholder_column],
+                )
+                chat.controls.append(placeholder_column)
                 self.page.update()
-                sleep(0.02)
+                self.page.update()
+                self.page.update()
+                self.page.update()
+                sleep(0.01)
+                chat.controls.pop()
 
         self.page.update()
-
 
     def setup_game(self):
         chat = ft.Column()
         new_message = ft.TextField()
-
 
         chat = ft.ListView(
             expand=True,
@@ -163,8 +187,10 @@ class PageController:
             auto_scroll=True,
         )
 
-        call_send_message_click = lambda e: self.send_message_click(e, new_message, chat)
-        
+        call_send_message_click = lambda e: self.send_message_click(
+            e, new_message, chat
+        )
+
         new_message = ft.TextField(
             hint_text="Write a message...",
             autofocus=True,
@@ -175,7 +201,6 @@ class PageController:
             expand=True,
             on_submit=call_send_message_click,
         )
-
 
         self.page.views.append(
             ft.View(
