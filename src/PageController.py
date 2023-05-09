@@ -17,6 +17,9 @@ class PageController:
         self.game_data_controller.set_player_name(self.tf3.value)
         self.game_data_controller.generate_game_dataset()
         
+        self.page.go("/loading")
+
+        # TODO: DO LOADING HERE
         self.testNPC = Npc()
         self.testNPC.setup_npc(self.game_data_controller.get_game_theme(), self.game_data_controller.get_game_location(), self.game_data_controller.get_player_name())
         
@@ -181,6 +184,38 @@ class PageController:
 
         self.page.update()
 
+    def setup_loading(self):
+        print("loading")
+        progress_bar = ft.ProgressRing(
+            width=64,
+            height=64,
+            stroke_width=4,
+            tooltip="Generating Game...",
+        )
+        # progress_container = ft.Container(
+        #     content=progress_bar,
+        #     padding=ft.padding.symmetric(horizontal=7),
+        #     margin=ft.margin.only(bottom=5)
+        # )
+        self.page.views.append(
+            ft.View(
+                "/loading",
+                [
+                    ft.Container(
+                        content=ft.Text(
+                            value="Currently generating your experience!",
+                            style=ft.TextThemeStyle.HEADLINE_SMALL,
+                        ),
+                        padding=50,
+                    ),
+                    progress_bar
+                ],
+                # horizontal_alignment="CENTER",
+                vertical_alignment="CENTER",
+                horizontal_alignment="CENTER",
+            )
+        )
+
     def setup_game(self):
         chat = ft.Column()
         new_message = ft.TextField()
@@ -270,6 +305,8 @@ class PageController:
             self.setup_prompt()
         elif self.page.route == "/game":
             self.setup_game()
+        elif self.page.route == "/loading":
+            self.setup_loading()
         self.page.update()
 
     def view_pop(self, view):

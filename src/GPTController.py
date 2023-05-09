@@ -25,7 +25,7 @@ class GPTController:
         response = openai.Completion.create(engine="text-davinci-003",
                                             prompt=prompt,
                                             temperature=1,
-                                            max_tokens=1000,
+                                            max_tokens=1250,
                                             top_p=1,
                                             n=1,
                                             stream=False,

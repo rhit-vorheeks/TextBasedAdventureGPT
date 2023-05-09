@@ -42,11 +42,13 @@ class Npc:
                     history, the last message is the message that you are directly responding to, so the rest before that is context.
                     Please do not include and single or double quotation marks. """
         
-        if len(self.chat_history) <= 20:
+        if len(self.chat_history) <= 22:
             # print("less than threshold")
             for hist in self.chat_history:
                 prompt += hist
         else:
+            prompt += self.chat_history[0]
+            prompt += self.chat_history[1]
             for hist in self.chat_history[-20:]:
                 prompt += hist
             # print('more than threshold')
