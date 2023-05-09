@@ -2,6 +2,7 @@ import flet as ft
 from GPTController import GPTController
 from GameDataController import GameDataController
 from time import sleep
+from NPC import Npc
 
 
 class PageController:
@@ -15,6 +16,10 @@ class PageController:
         self.game_data_controller.set_game_location(self.tf2.value)
         self.game_data_controller.set_player_name(self.tf3.value)
         self.game_data_controller.generate_game_dataset()
+        
+        self.testNPC = Npc()
+        self.testNPC.setup_npc(self.game_data_controller.get_game_theme(), self.game_data_controller.get_game_location(), self.game_data_controller.get_player_name())
+        
         self.page.go("/game")
 
     def setup_prompt(self):
@@ -103,7 +108,8 @@ class PageController:
             new_message.focus()
             self.page.update()
 
-    def add_message(self, message, chat, is_player, npc_name):
+    def add_message(self, message, chat, is_player, npc):
+        npc = self.testNPC # remove later
         text_message = ft.Text(value="", selectable=True)
         progress_bar = ft.ProgressRing(
             width=16,
@@ -119,7 +125,7 @@ class PageController:
         column = ft.Column(
             [
                 ft.Text(
-                    value=npc_name
+                    value=npc.get_name()
                     if not is_player
                     else self.game_data_controller.get_player_name(),
                     weight="bold",
@@ -144,12 +150,13 @@ class PageController:
             self.page.update()
             self.add_message(message, chat, False, "GPT")
         else:
-            message = self.gpt_controller.get_description(
-                "You are pretending to be a human, act helpful and be clever/funny. respond to the person '"
-                + self.game_data_controller.get_player_name()
-                + "' who told you only '"
-                + message + "'"
-            ).strip()
+            # message = self.gpt_controller.get_description(
+            #     "You are pretending to be a human, act helpful and be clever/funny. respond to the person '"
+            #     + self.game_data_controller.get_player_name()
+            #     + "' who told you only '"
+            #     + message + "'"
+            # ).strip()
+            message = npc.response(message)
             progress_bar.visible = False
             container.visible = False
             self.page.update()
