@@ -40,15 +40,14 @@ class Npc:
 
         prompt = """You are an NPC named '""" + self.name + """' who is '""" + self.description + """' in a text 
                     based adventure game about'""" + self.game_desc + """' that is located at '""" + self.game_setting + """ 
-                    You are not allowed to break character under any conditions. You must respond to the conversation, don't act like an
-                    NPC, you must act like a real person with the description(which means you can do some things that may seem weird).
+                    You are not allowed to break character under any conditions. You must respond to the conversation, don't act like
+                    a fake person, you must act like a real person with the description while also staying in character.
                     You must give your response as a message, but if necessary, you can provide an asterisk to tell what you're doing. 
                     You are in a conversation with the protagonist, who is named '""" + self.protag_name + """' and here is the chat
                     history, the last message is the message that you are directly responding to, so the rest before that is context.
                     Please do not include and single or double quotation marks. """
         
         if len(self.chat_history) <= 22:
-            # print("less than threshold")
             for hist in self.chat_history:
                 prompt += hist
         else:
@@ -56,7 +55,6 @@ class Npc:
             prompt += self.chat_history[1]
             for hist in self.chat_history[-20:]:
                 prompt += hist
-            # print('more than threshold')
 
         prompt += "'" + self.name + "': "
         

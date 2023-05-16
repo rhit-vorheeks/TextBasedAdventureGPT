@@ -190,7 +190,7 @@ class PageController:
                 )
                 self.chat.controls.append(placeholder)
                 self.page.update()
-                sleep(0.015)
+                sleep(0.005)
                 self.chat.controls.pop()
 
         self.page.update()

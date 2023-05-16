@@ -43,8 +43,9 @@ class Room:
         self.connecting_rooms.append(room)
 
     def handover_control(self, page_controller):
-        page_controller.add_message("You are in the " + self.room_name + ". \n" + self.room_description, False, False, True)
-        all_rooms = "You can go into the following rooms: \n"
+        all_rooms = "You are in the " + self.room_name + ". \n" + self.room_description
+        # page_controller.add_message("You are in the " + self.room_name + ". \n" + self.room_description, False, False, True)
+        all_rooms += "\n\nYou can go into the following rooms: \n"
         integer = 0
         for room in self.connecting_rooms:
             integer += 1
@@ -52,7 +53,7 @@ class Room:
         all_rooms = all_rooms[:-2] + ".\n"
         all_rooms += "Which room would you like to go into? Enter the number of the room you would like to go into."
         if self.has_npc:
-            all_rooms += "\nAlternatively, you can enter any other message to chat with " + self.npc.name + ", who is in the room with you. "
+            all_rooms += "\n\nAlternatively, you can enter any other message to chat with " + self.npc.name + ", who is in the room with you. "
             all_rooms += "If you choose to have a conversation, to leave just enter the number correspoding to the room of your choice at any time."
         page_controller.add_message(all_rooms, False, False, True)
 
