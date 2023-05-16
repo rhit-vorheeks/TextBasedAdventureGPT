@@ -1,6 +1,7 @@
 import flet as ft
 from GPTController import GPTController
 from GameDataController import GameDataController
+from GameController import GameController
 from time import sleep
 from NPC import Npc
 
@@ -10,19 +11,21 @@ class PageController:
         self.page = page
         self.gpt_controller = GPTController()
         self.game_data_controller = GameDataController()
+        self.sent_message = False
 
     def get_prompts(self):
         self.game_data_controller.set_game_theme(self.tf1.value)
         self.game_data_controller.set_game_location(self.tf2.value)
         self.game_data_controller.set_player_name(self.tf3.value)
-        self.game_data_controller.generate_game_dataset()
+        # self.game_data_controller.generate_game_dataset()
         
         self.page.go("/loading")
 
         # TODO: DO LOADING HERE
-        self.testNPC = Npc()
-        self.testNPC.setup_npc(self.game_data_controller.get_game_theme(), self.game_data_controller.get_game_location(), self.game_data_controller.get_player_name())
-        
+        self.game_data_controller.generate_game_dataset(self.progress_bar, self.page)
+        # self.testNPC = Npc()
+        # self.testNPC.setup_npc(self.game_data_controller.get_game_theme(), self.game_data_controller.get_game_location(), self.game_data_controller.get_player_name(), "", "", "")
+        self.game_controller = GameController(self.game_data_controller, self)
         self.page.go("/game")
 
     def setup_prompt(self):
@@ -100,19 +103,19 @@ class PageController:
             )
         )
 
-    def send_message_click(self, e, new_message, chat):
-        if new_message.value != "":
-            the_new_message = new_message.value.strip()
-            new_message.value = ""
-            # add read only flag swap here.
-            new_message.read_only = True
-            self.add_message(the_new_message, chat, True, "")
-            new_message.read_only = False
-            new_message.focus()
-            self.page.update()
+    # def send_message_click(self, e, new_message):
+    #     if new_message.value != "":
+    #         the_new_message = new_message.value.strip()
+    #         new_message.value = ""
+    #         # add read only flag swap here.
+    #         new_message.read_only = True
+    #         self.add_message(the_new_message, True, "", False)
+    #         new_message.read_only = False
+    #         new_message.focus()
+    #         self.page.update()
 
-    def add_message(self, message, chat, is_player, npc):
-        npc = self.testNPC # remove later
+    def add_message(self, message, is_player, npc, is_game_text):
+        # npc = self.testNPC # remove later
         text_message = ft.Text(value="", selectable=True)
         progress_bar = ft.ProgressRing(
             width=16,
@@ -125,12 +128,17 @@ class PageController:
             padding=ft.padding.symmetric(horizontal=7),
             margin=ft.margin.only(bottom=5)
         )
+        the_name = ""
+        if is_player:
+            the_name = self.game_data_controller.get_player_name()
+        elif is_game_text:
+            the_name = "Game"
+        else:
+            the_name = npc.get_name()
         column = ft.Column(
             [
                 ft.Text(
-                    value=npc.get_name()
-                    if not is_player
-                    else self.game_data_controller.get_player_name(),
+                    value=the_name,
                     weight="bold",
                 ),
                 text_message,
@@ -143,7 +151,7 @@ class PageController:
             controls=[column],
         )
 
-        chat.controls.append(m)
+        self.chat.controls.append(m)
         self.page.update()
 
         if is_player:
@@ -151,7 +159,7 @@ class PageController:
             progress_bar.visible = False
             text_message.value = message
             self.page.update()
-            self.add_message(message, chat, False, "GPT")
+            # self.add_message(message, False, "GPT", False)
         else:
             # message = self.gpt_controller.get_description(
             #     "You are pretending to be a human, act helpful and be clever/funny. respond to the person '"
@@ -159,7 +167,10 @@ class PageController:
             #     + "' who told you only '"
             #     + message + "'"
             # ).strip()
-            message = npc.response(message)
+
+            #TODO UNCOMMENT THIS AND FIX IT SO IT PASSES IN THE PROMPT AND CALLS HERE, NOT IN ROOM
+            if (npc != False):
+                message = npc.response(message)
             progress_bar.visible = False
             container.visible = False
             self.page.update()
@@ -177,19 +188,29 @@ class PageController:
                     vertical_alignment="start",
                     controls=[placeholder_column],
                 )
-                chat.controls.append(placeholder)
+                self.chat.controls.append(placeholder)
                 self.page.update()
                 sleep(0.015)
-                chat.controls.pop()
+                self.chat.controls.pop()
 
         self.page.update()
 
+    def wait_for_input(self):
+        self.new_message.read_only = False
+        while(self.sent_message == False):
+            sleep(0.1)
+        self.sent_message = False
+        self.new_message.read_only = True
+        return self.the_new_message
+
+
     def setup_loading(self):
         print("loading")
-        progress_bar = ft.ProgressRing(
+        self.progress_bar = ft.ProgressRing(
             width=64,
             height=64,
             stroke_width=4,
+            value=0,
             tooltip="Generating Game...",
         )
         # progress_container = ft.Container(
@@ -208,7 +229,7 @@ class PageController:
                         ),
                         padding=50,
                     ),
-                    progress_bar
+                    self.progress_bar
                 ],
                 # horizontal_alignment="CENTER",
                 vertical_alignment="CENTER",
@@ -216,20 +237,36 @@ class PageController:
             )
         )
 
+    def message_entered(self, new_message):
+        if new_message.value != "":
+            self.the_new_message = new_message.value.strip()
+            self.sent_message = True
+            new_message.value = ""
+            # add read only flag swap here.
+            # new_message.read_only = True
+            # self.add_message(the_new_message, True, "", False)
+            # new_message.read_only = False
+            new_message.focus()
+            self.page.update()
+
     def setup_game(self):
-        chat = ft.Column()
+        self.chat = ft.Column()
         new_message = ft.TextField()
 
-        chat = ft.ListView(
+        self.chat = ft.ListView(
             expand=True,
             spacing=10,
             auto_scroll=True,
         )
 
-        call_send_message_click = lambda e: self.send_message_click(
-            e, new_message, chat
-        )
+        # call_send_message_click = lambda e: self.send_message_click(
+        #     e, new_message, self.chat
+        # )
 
+        self.new_message = new_message
+        call_send_message_click = lambda e: self.message_entered(new_message)
+
+        new_message.read_only = True
         new_message = ft.TextField(
             hint_text="Write a message...",
             autofocus=True,
@@ -246,7 +283,7 @@ class PageController:
                 "/game",
                 [
                     ft.Container(
-                        content=chat,
+                        content=self.chat,
                         border=ft.border.all(1, ft.colors.OUTLINE),
                         border_radius=5,
                         padding=10,
@@ -268,6 +305,7 @@ class PageController:
                 horizontal_alignment="STRETCH",
             )
         )
+        self.game_controller.start_game()
 
     def route_change(self, route):
         self.page.views.clear()

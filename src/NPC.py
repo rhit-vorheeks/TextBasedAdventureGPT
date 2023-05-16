@@ -8,15 +8,17 @@ class Npc:
         self.gpt_controller = GPTController()
 
     
-    def setup_npc(self, game_desc, game_setting, protag_name):
+    def setup_npc(self, game_desc, game_setting, protag_name, room_name, room_description, game_intro_text):
         self.game_desc = game_desc
         self.game_setting = game_setting
         self.protag_name = protag_name
 
-        name_prompt = """You are a bot that output a name on a single line and absolutely nothing else.
+        name_prompt = """You are a bot that output an NPC's name on a single line and absolutely nothing else.
                         You can never break character. Provide solely just a unique, interesting, or fun name with
                         nothing else for this text-based game that is about: """ + game_desc + """. 
-                        Which takes place at: '""" +game_setting + "' Provide the name with the information given. "
+                        Which takes place at: '""" +game_setting + """' This NPC is located in the room named: '""" + room_name + """'
+                        and the room's description is: '""" + room_description + """' Here is the game's introduction text: 
+                        '""" + game_intro_text + """' Provide the name with the information given. Respond with ONLY the name. """
         self.name = self.gpt_controller.get_description(name_prompt).strip()
 
         description_prompt = """You are a bot that solely outputs vivid two to three sentence character descriptions containing as many 
@@ -24,8 +26,11 @@ class Npc:
                                 appropriate, you can make them not human. (For example, it could potentially be a ghost or a talking animal) 
                                 Provide a gender. Come up with an interesting and distinct way for them to act  Provide the description for 
                                 an NPC named '"""+self.name+"""' That takes place in a game about: """ + game_desc + """. 
-                                Which takes place at: '""" +game_setting + """' If you decide to give the character a connection to
-                                the protagonist, the protagonist's name is '"""+protag_name+"'"
+                                Which takes place at: '""" +game_setting + """' This NPC is located in the room named: '""" + room_name + """' 
+                                and the room's description is: '""" + room_description + """' If you decide to give the character a 
+                                connection to the protagonist, the protagonist's name is '"""+protag_name+"""' Here is the game's
+                                introduction text: '""" + game_intro_text + """' Provide the description with the information given.
+                                 Respond with ONLY the description. """
         self.description = self.gpt_controller.get_description(description_prompt).strip()
         print(self.name)
         print(self.description)

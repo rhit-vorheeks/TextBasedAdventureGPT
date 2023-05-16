@@ -34,3 +34,13 @@ class GPTController:
                                             stop="")
 
         return response.choices[0].text
+        
+        # openai.Model.retrieve("gpt-3.5-turbo")
+        # completion = openai.ChatCompletion.create(
+        #     model="gpt-3.5-turbo",
+        #     messages=[
+        #         {"role": "user", "content": prompt}
+        #     ]
+        # )
+
+        # return completion.choices[0].message["content"]
