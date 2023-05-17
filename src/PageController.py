@@ -174,24 +174,25 @@ class PageController:
             progress_bar.visible = False
             container.visible = False
             self.page.update()
+            placeholder_text = ft.Text(value=" ")
+            placeholder_column = ft.Column(
+                [
+                   placeholder_text
+                ],
+                spacing=100,
+            )
+            placeholder = ft.ResponsiveRow(
+                vertical_alignment="start",
+                controls=[placeholder_column],
+            )
+            self.chat.controls.append(placeholder)
             for character in message:
                 text_message.value += character
 
-                placeholder_text = ft.Text(value=" ")
-                placeholder_column = ft.Column(
-                    [
-                        placeholder_text
-                    ],
-                    spacing=100,
-                )
-                placeholder = ft.ResponsiveRow(
-                    vertical_alignment="start",
-                    controls=[placeholder_column],
-                )
-                self.chat.controls.append(placeholder)
                 self.page.update()
                 sleep(0.005)
-                self.chat.controls.pop()
+            
+            self.chat.controls.pop()
 
         self.page.update()
 

@@ -10,6 +10,10 @@ class GameDataController:
         self.game_intro_text = ""
         self.GPTcontroller = GPTController()
         self.rooms = []
+        self.amount_of_items = random.randint(3, 5)
+        self.items_taken = 0
+        self.game_win_text = ""
+        self.game_lose_text = ""
 
     def set_game_theme(self, theme):
         self.game_theme = theme.strip()
@@ -52,7 +56,7 @@ class GameDataController:
         self.progress_bar_update()
 
         for i in range(0, last_room_int):
-            room = Room(self.game_theme, self.game_location, self.player_name, self.rooms, self.game_intro_text, is_final_room=(i == last_room_int - 1))
+            room = Room(self.game_theme, self.game_location, self.player_name, self.rooms, self.game_intro_text, self, is_final_room=(i == last_room_int - 1))
             self.progress_bar_update()
             self.rooms.append(room)
             
@@ -60,31 +64,66 @@ class GameDataController:
                 self.first_room = room
             elif i == last_room_int - 1:
                 print("boss room: " + room.room_name)
-        self.randomly_connect_all_rooms()
+        self.connect_all_rooms()
 
-        #prints all room connections
+        self.randomly_disperse_items()
+
+        self.game_intro_text += "\n\nYou must find the following items before progressing to the final room: "
         for room in self.rooms:
-            print(room.room_name)
-            print(room.connecting_rooms)
-            print()
+            if room.contains_item:
+                self.game_intro_text += "\n" + room.item_name
+        
+        self.print_room_connections()
 
-    # randomly connect each room to two-three other rooms. ensure that final room is connected to a single room.
-    def randomly_connect_all_rooms(self):
-        # Shuffle the rooms except for the last one (the boss room)
-        non_boss_rooms = self.rooms[:-1]
-        random.shuffle(non_boss_rooms)
+        game_win_prompt = """You are a bot that exclusively outputs interesting endings for text-based adventure
+                             games. Your job is generate an 3-5 sentence ending for a text-based adventure game.
+                             The player had just won the game after defeating the boss. The game was about: 
+                             '""" + self.game_theme + """' and took place at: '""" + self.game_location + """' 
+                             and the protagonist's name was: '""" + self.player_name + """'"""
 
-        # Connect the rooms in the shuffled order
-        for i in range(len(non_boss_rooms) - 1):
-            # Connect each room to the next one
-            non_boss_rooms[i].connect_room(non_boss_rooms[i + 1])
+    # connect each room to the next two rooms, except last room only has 1 going into it
+    # make sure that you can go backwards into the room you came from
+    def connect_all_rooms(self):
+        for i in range(len(self.rooms)):
+            current_room = self.rooms[i]
+            # Connect the current room to the next room if it exists
+            if i+1 < len(self.rooms):
+                current_room.connect_room(self.rooms[i+1])
+            # Connect the current room to the room after the next room if it exists
+            if i+2 < len(self.rooms):
+                current_room.connect_room(self.rooms[i+2])
+            # Connect the next room or the room after the next room back to the current room if they exist
+            if i+1 < len(self.rooms):
+                self.rooms[i+1].connect_room(current_room)
+            if i+2 < len(self.rooms):
+                self.rooms[i+2].connect_room(current_room)
 
-            # Randomly connect each room to one other random room, ensuring it's not the same room or the next one
-            other_room = random.choice(non_boss_rooms[:i] + non_boss_rooms[i + 2:])
-            non_boss_rooms[i].connect_room(other_room)
+    def print_room_connections(self, room=None, visited=None, depth=0):
+        # If we are starting, use the first room
+        if room is None:
+            room = self.rooms[0]
+        # We need to keep track of visited rooms to avoid infinite loops
+        if visited is None:
+            visited = set()
+        # We print the current room with indentation based on the depth in the tree
+        print('  ' * depth + room.room_name)
+        visited.add(room)
+        # For each connected room that we have not visited yet, we call the function recursively
+        for connected_room in room.connecting_rooms:
+            if connected_room not in visited:
+                self.print_room_connections(connected_room, visited, depth + 1)
 
-        # Connect the last room in the shuffled list to the boss room
-        non_boss_rooms[-1].connect_room(self.rooms[-1])
 
-        # Make sure the boss room only connects back to the last room in the shuffled list
-        self.rooms[-1].connect_room(non_boss_rooms[-1])
+
+    def randomly_disperse_items(self):
+        rooms_copy = self.rooms.copy()[1:-1]
+        # randomly select a room to place each item in, doesn't include starting room or final boss room. cant reuse rooms
+        for i in range(0, self.amount_of_items):
+            random_room = random.choice(rooms_copy)
+            rooms_copy.remove(random_room)
+            prompt = """You are a bot that exclusively outputs one interesting item name for text-based adventure about 
+                        '""" + self.game_theme + """'. This item is located in the '""" + random_room.room_name + """' 
+                        room, where '""" + random_room.room_description + """'. Your must generate one item name, and say nothing
+                        else, that is located inside this room. You are not allowed to break character under any conditions."""
+            item_name = self.GPTcontroller.get_description(prompt).strip()
+            random_room.add_item(item_name)
