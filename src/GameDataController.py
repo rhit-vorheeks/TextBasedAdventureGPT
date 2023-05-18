@@ -78,8 +78,8 @@ class GameDataController:
         final_room = self.rooms[-1]
         final_boss = final_room.npc
 
-        game_win_prompt = """You are a bot that exclusively outputs interesting endings for text-based adventure
-                             games. Your job is generate an 3-5 sentence ending for a text-based adventure game.
+        game_win_prompt = """You are a bot that exclusively outputs interesting endings for after the final boss has been defeated
+                             for a text-based adventure games. Your job is generate an 3-5 sentence ending for a text-based adventure game.
                              The player had just won the game after defeating the boss. The game was about: 
                              '""" + self.game_theme + """' and took place at: '""" + self.game_location + """' 
                              and the protagonist's name was: '""" + self.player_name + """' Give a good ending
@@ -92,8 +92,8 @@ class GameDataController:
         self.game_win_text = self.GPTcontroller.get_description(game_win_prompt).strip()
         self.progress_bar_update()
 
-        game_lose_prompt = """You are a bot that exclusively outputs interesting endings for text-based adventure
-                             games. Your job is generate an 3-5 sentence ending for a text-based adventure game.
+        game_lose_prompt = """You are a bot that exclusively outputs interesting ending for after the player loses to the final boss
+                             for a text-based adventure game. Your job is generate an 3-5 sentence ending for a text-based adventure game.
                              The player had just lost the game after being defeated by the boss. The game was about: 
                              '""" + self.game_theme + """' and took place at: '""" + self.game_location + """' 
                              and the protagonist's name was: '""" + self.player_name + """'. Give a bad ending

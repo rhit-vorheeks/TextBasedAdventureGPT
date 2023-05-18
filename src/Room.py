@@ -84,7 +84,7 @@ class Room:
 
                 reduced_damage = 0
                 if player_input == 'attack':
-                    damage = random.randint(15, 40)
+                    damage = random.randint(15, 25)
                     boss_health -= damage
                     page_controller.add_message(f"You attacked {self.npc.name} and dealt {damage} damage!", False, False, True)
                 elif player_input == 'defend':
@@ -105,7 +105,7 @@ class Room:
 
                 # Boss attacks player and deals a random amount of damage
                 if boss_health > 0:
-                    damage = random.randint(20, 30) - reduced_damage
+                    damage = random.randint(20, 35) - reduced_damage
                     player_health -= damage
                     page_controller.add_message(f"{self.npc.name} attacked you and dealt {damage} damage!", False, False, True)
 
