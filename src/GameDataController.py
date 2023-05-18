@@ -43,7 +43,7 @@ class GameDataController:
         self.page = page
         # last_room_int = random.randint(12, 15)
         last_room_int = 8
-        self.max_load_progress = last_room_int + 1
+        self.max_load_progress = last_room_int + 1 + self.amount_of_items + 2
         self.loading_circle = loading_circle
         self.rooms = []
 
@@ -75,11 +75,36 @@ class GameDataController:
         
         self.print_room_connections()
 
+        final_room = self.rooms[-1]
+        final_boss = final_room.npc
+
         game_win_prompt = """You are a bot that exclusively outputs interesting endings for text-based adventure
                              games. Your job is generate an 3-5 sentence ending for a text-based adventure game.
                              The player had just won the game after defeating the boss. The game was about: 
                              '""" + self.game_theme + """' and took place at: '""" + self.game_location + """' 
-                             and the protagonist's name was: '""" + self.player_name + """'"""
+                             and the protagonist's name was: '""" + self.player_name + """' Give a good ending
+                             to the game after having just defeated the final boss named '""" + final_boss.name + """'
+                             who was a """ + final_boss.description + """. The boss fight took place in the room named
+                             '""" + final_room.room_name + """' where """ + final_room.room_description + """.
+                             The game opened with the following text: '""" + self.game_intro_text + """'. 
+                             You are not allowed to break character under any conditions."""
+        
+        self.game_win_text = self.GPTcontroller.get_description(game_win_prompt).strip()
+        self.progress_bar_update()
+
+        game_lose_prompt = """You are a bot that exclusively outputs interesting endings for text-based adventure
+                             games. Your job is generate an 3-5 sentence ending for a text-based adventure game.
+                             The player had just lost the game after being defeated by the boss. The game was about: 
+                             '""" + self.game_theme + """' and took place at: '""" + self.game_location + """' 
+                             and the protagonist's name was: '""" + self.player_name + """'. Give a bad ending
+                             to the game after having just been defeated by the final boss named '""" + final_boss.name + """'
+                             who was a """ + final_boss.description + """. The boss fight took place in the room named
+                             '""" + final_room.room_name + """' where """ + final_room.room_description + """. 
+                             The game opened with the following text: '""" + self.game_intro_text + """'. 
+                             You are not allowed to break character under any conditions."""
+        
+        self.game_lose_text = self.GPTcontroller.get_description(game_lose_prompt).strip()
+        self.progress_bar_update()
 
     # connect each room to the next two rooms, except last room only has 1 going into it
     # make sure that you can go backwards into the room you came from
@@ -127,3 +152,4 @@ class GameDataController:
                         else, that is located inside this room. You are not allowed to break character under any conditions."""
             item_name = self.GPTcontroller.get_description(prompt).strip()
             random_room.add_item(item_name)
+            self.progress_bar_update()
