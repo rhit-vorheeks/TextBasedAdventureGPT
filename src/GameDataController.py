@@ -1,6 +1,7 @@
 from GPTController import GPTController
 import random
 from Room import Room
+from time import sleep
 
 class GameDataController:
     def __init__(self):
@@ -105,6 +106,7 @@ class GameDataController:
         
         self.game_lose_text = self.GPTcontroller.get_description(game_lose_prompt).strip()
         self.progress_bar_update()
+        sleep(0.5)
 
     # connect each room to the next two rooms, except last room only has 1 going into it
     # make sure that you can go backwards into the room you came from

@@ -16,4 +16,12 @@ class GameController:
             self.previous_room = self.current_room
             self.current_room = new_room
 
+        
+        self.page_controller.add_message("Type 'restart' to be brought back to the menu to start another adventure!", False, False, True)
+        player_input = self.page_controller.wait_for_input()
+        while(player_input.strip() != "restart"):
+            self.page_controller.add_message("Unknown command!", False, False, True)
+            player_input = self.page_controller.wait_for_input()
+
+        self.page_controller.page.go("/prompts")
         print("game over!")
