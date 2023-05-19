@@ -110,12 +110,12 @@ class Room:
                     page_controller.add_message(f"{self.npc.name} attacked you and dealt {damage} damage!", False, False, True)
 
             # Determine the result of the fight
-            if player_health <= 0:
+            if boss_health <= 0:
                 # page_controller.add_message(f"You have been defeated by {self.npc.name}. Game over!", False, False, True)
-                page_controller.add_message(self.game_data_controller.game_lose_text, False, False, True)
-            elif boss_health <= 0:
-                # page_controller.add_message(f"You defeated {self.npc.name}! Congratulations, you've completed the game!", False, False, True)
                 page_controller.add_message(self.game_data_controller.game_win_text, False, False, True)
+            elif player_health <= 0:
+                # page_controller.add_message(f"You defeated {self.npc.name}! Congratulations, you've completed the game!", False, False, True)
+                page_controller.add_message(self.game_data_controller.game_lose_text, False, False, True)
             return None
 
         elif self.is_final_room and self.game_data_controller.amount_of_items != self.game_data_controller.items_taken:

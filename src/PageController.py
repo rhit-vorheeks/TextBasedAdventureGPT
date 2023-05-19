@@ -190,7 +190,7 @@ class PageController:
                 text_message.value += character
 
                 self.page.update()
-                sleep(0.002)
+                sleep(0.005)
             
             self.chat.controls.pop()
 

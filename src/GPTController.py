@@ -1,14 +1,11 @@
 import openai
 import os
-from dotenv import load_dotenv
 
 
 class GPTController:
     def __init__(self):
-        load_dotenv()
         api_key = os.getenv('API_KEY')
         openai.api_key = api_key
-        
     
     def get_dialogue(self, prompt):
         openai.Model.retrieve("gpt-3.5-turbo")
