@@ -41,6 +41,7 @@ class GameDataController:
 
     def generate_game_dataset(self, loading_circle, page):
         self.load_progress = 0
+        self.items_taken = 0
         self.page = page
         # last_room_int = random.randint(12, 15)
         last_room_int = 8

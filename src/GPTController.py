@@ -4,8 +4,11 @@ import os
 
 class GPTController:
     def __init__(self):
-        api_key = os.getenv('API_KEY')
-        openai.api_key = api_key
+        # api_key = os.getenv('API_KEY')
+        # openai.api_key = api_key
+        
+        # replace with your own API key if you'd like to run this yourself
+        openai.api_key = "???"
     
     def get_dialogue(self, prompt):
         openai.Model.retrieve("gpt-3.5-turbo")
